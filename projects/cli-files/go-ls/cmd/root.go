@@ -10,7 +10,6 @@ import (
 
 func Execute() {
 	argsLength := len(os.Args)
-	fmt.Print(os.Args)
 	if argsLength > 2 {
 		fmt.Println("Error: Too many arguments, please enter only one file name")
 		return
@@ -23,6 +22,18 @@ func Execute() {
 
 	if path == "" {
 		path = "."
+	}
+
+	// Get the file info for the provided path
+	fileInfo, err := os.Stat(path)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+
+	if !fileInfo.IsDir() {
+		fmt.Print(fileInfo.Name())
+		return
 	}
 
 	files, err := os.ReadDir(path)
