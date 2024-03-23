@@ -8,6 +8,8 @@ import (
 	"github.com/fatih/color"
 )
 
+// Description: go-ls is a customer command that lists the files in the given path
+
 func Execute() {
 	argsLength := len(os.Args)
 	if argsLength > 2 {
@@ -15,7 +17,7 @@ func Execute() {
 		return
 	}
 	path := ""
-	// When we run code with go-ls . => it will have two args [go-ls .]
+	// When we run code with `go-ls .` => it will have two args [go-ls .]
 	if argsLength == 2 {
 		path = os.Args[1]
 	}
@@ -31,6 +33,7 @@ func Execute() {
 		return
 	}
 
+	// If path is a file then we just print that file out
 	if !fileInfo.IsDir() {
 		fmt.Print(fileInfo.Name())
 		return
