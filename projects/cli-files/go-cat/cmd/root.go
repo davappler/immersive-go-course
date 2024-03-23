@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 )
 
@@ -12,7 +11,12 @@ func Execute() {
 		return
 	}
 
-	path := os.Args[1]
+	for _, arg := range os.Args[1:] {
+		catFile(arg)
+	}
+}
+
+func catFile(path string) {
 	fileInfo, err := os.Stat(path)
 	if err != nil {
 		fmt.Printf("Error: '%s' no such file or directory", path)
@@ -24,7 +28,7 @@ func Execute() {
 		return
 	}
 
-	content, err := ioutil.ReadFile(path)
+	content, err := os.ReadFile(path)
 	if err != nil {
 		fmt.Print("Error: Failed to read the file")
 		return
@@ -32,6 +36,4 @@ func Execute() {
 
 	stringContent := string(content)
 	fmt.Print(stringContent)
-
 }
-
