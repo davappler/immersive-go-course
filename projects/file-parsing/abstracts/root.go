@@ -1,6 +1,7 @@
 package abstracts
 
 import (
+	"encoding/csv"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -66,4 +67,27 @@ func ReadRepeatedJsonTxt() {
 		fmt.Printf("Name %s, Score %d \n", players[i].Name, players[i].HighScore)
 	}
 
+}
+
+func ReadDataCsv() {
+	file, err := os.Open("examples/data.csv")
+	if err != nil {
+		fmt.Print("Error while opening the file")
+	}
+	defer file.Close()
+
+	csvReader := csv.NewReader(file)
+	records, err := csvReader.ReadAll()
+	if err != nil {
+		fmt.Print("Failed to read the records")
+	}
+
+	for i := 0; i < len(records); i++ {
+		if i < 1 {
+			continue
+		}
+		currentRecord := records[i]
+
+		fmt.Println(currentRecord[0], currentRecord[1])
+	}
 }

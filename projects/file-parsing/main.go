@@ -14,5 +14,7 @@ func main() {
 		abstracts.ReadJsonTxt()
 	} else if arg == "repeated-json.txt" {
 		abstracts.ReadRepeatedJsonTxt()
+	} else if arg == "data.csv" {
+		abstracts.ReadDataCsv()
 	}
 }
