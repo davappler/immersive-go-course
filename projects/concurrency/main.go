@@ -3,16 +3,18 @@ package main
 import (
 	"fmt"
 	"sync"
+	"sync/atomic"
 )
 
-var x = 0
+var x atomic.Int32
 
 func increment(wg *sync.WaitGroup) {
-	x = x + 1
+	x.Add(1)
 	wg.Done()
 }
 
-func main() {
+func semiMain() {
+	x.Store(0)
 	var w sync.WaitGroup
 	for i := 0; i < 1000; i++ {
 		w.Add(1)
@@ -20,4 +22,12 @@ func main() {
 	}
 	w.Wait()
 	fmt.Println("final value of x", x)
+}
+
+func main() {
+	semiMain()
+	semiMain()
+	semiMain()
+	semiMain()
+	semiMain()
 }
