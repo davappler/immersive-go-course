@@ -27,6 +27,7 @@ func main() {
 			retryAfter := resp.Header.Get("Retry-After")
 			retryAfterInteger, err := strconv.Atoi(retryAfter)
 			if err != nil {
+				// This is where we give up if we do not have the amount of time as an integer. We would not like to wait for it as it is uncertain how long is it gonna be.
 				fmt.Println("Error parsing string")
 				return
 			}
