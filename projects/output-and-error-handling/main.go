@@ -32,6 +32,19 @@ func main() {
 				os.Exit(3) // Exit code 3 for server overload
 			}
 
+			timeFromServer, err := isValidTimestamp(retryAfter)
+
+			if err != nil {
+				// Get the current time
+				currentTime := time.Now()
+				// Calculate the difference between the current time and the parsed time
+				duration := currentTime.Sub(timeFromServer)
+				if duration > 1*time.Minute {
+					// here we can say if duration is greater than 1 min then we throw error if not we wait for 1 min and run the code again
+				}
+
+			}
+
 			// here I can check I am getting a timestamp and find how far in time is that timestamp, if it greater than a the threshold we return exit.code(3) (I need to decide the timestamp)
 			retryAfterInteger, err := strconv.Atoi(retryAfter)
 			if err != nil {
@@ -63,4 +76,10 @@ func main() {
 
 	fmt.Fprintln(os.Stderr, "Max tries reached! Exiting")
 	os.Exit(5) // Exit code 5 for max tries reached
+}
+
+// isValidTimestamp checks if the provided string is a valid timestamp.
+func isValidTimestamp(timestamp string) (time.Time, error) {
+	timeFromServer, err := time.Parse("time.RFC1123", timestamp)
+	return timeFromServer, err
 }
