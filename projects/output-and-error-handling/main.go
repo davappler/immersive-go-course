@@ -21,7 +21,7 @@ func main() {
 		resp, err := c.Get(url)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "Error from request:", err)
-			return
+			os.Exit(1) // Exit code 1 for network or request error
 		}
 
 		if resp.StatusCode == http.StatusTooManyRequests {
@@ -30,7 +30,7 @@ func main() {
 			if err != nil {
 				// This is where we give up if we do not have the amount of time as an integer. We would not like to wait for it as it is uncertain how long is it gonna be.
 				fmt.Fprintln(os.Stderr, "Error parsing string", err)
-				return
+				os.Exit(2) // Exit code 2 for parsing error
 			}
 
 			if retryAfterInteger > 1 {
@@ -40,7 +40,7 @@ func main() {
 
 			if retryAfterInteger > 5 {
 				fmt.Fprintln(os.Stderr, "Server is overloaded we can not get the weather details sorry", err)
-				return
+				os.Exit(3) // Exit code 3 for server overload
 			}
 
 			duration := time.Duration(retryAfterInteger) * time.Second
@@ -49,7 +49,7 @@ func main() {
 			body, err := io.ReadAll(resp.Body)
 			if err != nil {
 				fmt.Fprintln(os.Stderr, "error reading response body", err)
-				return
+				os.Exit(4) // Exit code 4 for reading response body error
 			}
 			fmt.Fprintln(os.Stdout, string(body))
 			return
@@ -57,4 +57,5 @@ func main() {
 	}
 
 	fmt.Fprintln(os.Stderr, "Max tries reached! Exiting")
+	os.Exit(5) // Exit code 5 for max tries reached
 }
