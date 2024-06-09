@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 )
@@ -19,7 +20,7 @@ func main() {
 	for i := 0; i < max_tries; i++ {
 		resp, err := c.Get(url)
 		if err != nil {
-			fmt.Println("Error from request", err)
+			fmt.Fprintln(os.Stderr, "Error from request:", err)
 			return
 		}
 
@@ -28,16 +29,17 @@ func main() {
 			retryAfterInteger, err := strconv.Atoi(retryAfter)
 			if err != nil {
 				// This is where we give up if we do not have the amount of time as an integer. We would not like to wait for it as it is uncertain how long is it gonna be.
-				fmt.Println("Error parsing string")
+				fmt.Fprintln(os.Stderr, "Error parsing string", err)
 				return
 			}
 
 			if retryAfterInteger > 1 {
 				fmt.Println("There is a little delay...")
+
 			}
 
 			if retryAfterInteger > 5 {
-				fmt.Println("Server is overloaded we can not get the weather details sorry")
+				fmt.Fprintln(os.Stderr, "Server is overloaded we can not get the weather details sorry", err)
 				return
 			}
 
@@ -46,15 +48,13 @@ func main() {
 		} else {
 			body, err := io.ReadAll(resp.Body)
 			if err != nil {
-				fmt.Println("error reading response body")
+				fmt.Fprintln(os.Stderr, "error reading response body", err)
 				return
 			}
-
-			fmt.Println(string(body))
+			fmt.Fprintln(os.Stdout, string(body))
 			return
 		}
-
 	}
 
-	fmt.Println("Max tries reached! Exiting")
+	fmt.Fprintln(os.Stderr, "Max tries reached! Exiting")
 }
